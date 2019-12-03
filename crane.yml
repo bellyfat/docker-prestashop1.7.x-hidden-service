@@ -1,0 +1,14 @@
+---
+services:
+  prestashop:
+    rm: true
+    interactive: true
+    tty: true
+    volume: 
+    - ./htdocs:/app
+    workdir: /app
+
+accelerated-mounts:
+  app:
+    uid: 1000
+    gid: 1000
