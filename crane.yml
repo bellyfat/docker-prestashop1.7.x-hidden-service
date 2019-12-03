@@ -8,7 +8,13 @@ services:
     - ./htdocs:/app
     workdir: /app
 
+groups:
+  shop:
+  - prestashop
+  - web
+  - db
+
 accelerated-mounts:
-  app:
+  "app:/app":
     uid: 1000
     gid: 1000
