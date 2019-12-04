@@ -6,3 +6,6 @@ app/**
 .docker-sync/
 .docker-sync/*
 .docker-sync/**
+htdocs
+htdocs/*
+htdocs/**

@@ -1,9 +1,6 @@
 ---
 services:
   prestashop:
-    rm: true
-    interactive: true
-    tty: true
     volume: 
     - ./htdocs:/app
     workdir: /app
@@ -15,6 +12,6 @@ groups:
   - db
 
 accelerated-mounts:
-  "app:/app":
+  "${PWD}/app:/app":
     uid: 1000
     gid: 1000

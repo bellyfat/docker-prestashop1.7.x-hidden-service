@@ -2,11 +2,19 @@ build:
 	@docker-compose build --no-cache
 
 run:
+	@mkdir -p htdocs
 	@docker-compose up -d
-	@docker-sync stop && docker-sync start
+	@docker-sync stop && docker-sync clean && docker-sync start
 
-prune:
-	@docker volume rm app
+stop:
+	@docker-compose stop
+	@docker-sync stop
+
+clean:
+	@docker-sync stop
+	@docker-compose stop
+	@rm -fR ./htdocs
+	@docker volume rm -f app
 
 get-user-web:
 	@docker exec docker-prestashop17x-php7-fpm_web_1 id -u web
