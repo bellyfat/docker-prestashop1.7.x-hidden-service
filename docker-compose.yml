@@ -102,7 +102,10 @@ services:
     # restart: unless-stopped
 
   phpmyadmin:
-    image: phpmyadmin/phpmyadmin
+    image: phpmyadmin/phpmyadmin:alpine3.10
+    build:
+      context: phpmyadmin
+      dockerfile: Dockerfile
     container_name: phpmyadmin
     environment:
     - pma_arbitrary=1
