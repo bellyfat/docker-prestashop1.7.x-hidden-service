@@ -11,7 +11,7 @@ services:
     environment:
       # PROXY_MAP: 8081:8081 # first port is exposed port and the second one is service internal port.
       # Set mapping ports
-      SERVICE_TOR_SERVICE_HOSTS: 8081:web:80
+      SERVICE_TOR_SERVICE_HOSTS: 80:web:80
       # Set private key
       SERVICE_TOR_SERVICE_KEY: |
         -----BEGIN RSA PRIVATE KEY-----
@@ -34,6 +34,7 @@ services:
     build: 
       context: ./prestashop
       dockerfile: Dockerfile
+    container_name: prestashop
     environment:
       PS_DOMAIN: "kgeaybcqmclodfed.onion:8081"
       DB_SERVER: db
@@ -71,6 +72,7 @@ services:
     build: 
       context: ./web
       dockerfile: Dockerfile
+    container_name: web
     environment:
       PS_DOMAIN: "localhost:8081"
       PS_DIR_INSTALL: install1234
@@ -86,23 +88,37 @@ services:
 
   db:
     image: mariadb:latest
+    container_name: db
     environment:
       MYSQL_ROOT_PASSWORD: supercow
       MYSQL_DATABASE: prestashop
       MYSQL_USER: prestashop
       MYSQL_PASSWORD: prestashop
+    ports:
+    - "3306:3306"
     volumes:
     - ./db/config:/etc/mysql/conf.d
     - db-data:/var/lib/mysql
     # restart: unless-stopped
 
-  #ftp:
-  #  image: atmoz/sftp:alpine
-  #  ports:
-  #  - "2222:22"
-  #  volumes:
-  #  - app:/app
-  #  command: php:prestashop:1000
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: phpmyadmin
+    environment:
+    - pma_arbitrary=1
+    - pma_host=mariadb
+    depends_on:
+    - db
+    ports:
+    - 8081:80
+
+  # ftp:
+  #   image: atmoz/sftp:alpine
+  #   ports:
+  #   - "2222:22"
+  #   volumes:
+  #   - app:/app
+  #   command: php:prestashop:1000
 
 volumes:
     app:
