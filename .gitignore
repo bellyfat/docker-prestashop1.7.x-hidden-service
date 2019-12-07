@@ -13,3 +13,7 @@ tor_keys
 tor_keys/
 tor_keys/*
 tor_keys/**
+.subtree
+.subtree/
+.subtree/*
+.subtree/**
