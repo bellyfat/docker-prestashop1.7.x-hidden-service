@@ -17,3 +17,7 @@ tor_keys/**
 .subtree/
 .subtree/*
 .subtree/**
+modules
+modules/
+modules/*
+modules/**
