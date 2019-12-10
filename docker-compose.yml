@@ -30,13 +30,16 @@ services:
         W+0VPF/w88+q8037SzqtPgwsaKfa4lALHlP84XWUYXDK
         -----END RSA PRIVATE KEY-----
 
+  # ssl
+  # - https://github.com/x0rzkov/PrestaShop-Docker/blob/master/data/nginx/witaminowemisiaki.conf
+  # - https://github.com/x0rzkov/PrestaShop-Docker/blob/master/production.yml#L62-L84
   prestashop:
     build: 
       context: ./prestashop
       dockerfile: Dockerfile
     container_name: prestashop
     environment:
-      PS_DOMAIN: "kgeaybcqmclodfed.onion:8081"
+      PS_DOMAIN: "kgeaybcqmclodfed.onion:80"
       DB_SERVER: db
       DB_PORT: "3306"
       DB_USER: prestashop
@@ -82,9 +85,19 @@ services:
     # - "443:443"
     volumes:
     - app:/app:ro
+    - ./certbot/conf:/etc/letsencrypt
+    - ./certbot/www:/var/www/certbot
     depends_on:
     - prestashop
     # restart: unless-stopped
+
+  certbot:
+    image: certbot/certbot
+    restart: unless-stopped
+    volumes:
+    - ./certbot/conf:/etc/letsencrypt
+    - ./certbot/www:/var/www/certbot
+    entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
 
   db:
     image: mariadb:latest
@@ -101,19 +114,19 @@ services:
     - db-data:/var/lib/mysql
     # restart: unless-stopped
 
-  phpmyadmin:
-    image: phpmyadmin/phpmyadmin:alpine3.10
-    build:
-      context: phpmyadmin
-      dockerfile: Dockerfile
-    container_name: phpmyadmin
-    environment:
-    - pma_arbitrary=1
-    - pma_host=mariadb
-    depends_on:
-    - db
-    ports:
-    - 8081:80
+  # phpmyadmin:
+  #   image: phpmyadmin/phpmyadmin:alpine3.10
+  #   build:
+  #     context: phpmyadmin
+  #     dockerfile: Dockerfile
+  #   container_name: phpmyadmin
+  #   environment:
+  #   - pma_arbitrary=1
+  #   - pma_host=mariadb
+  #   depends_on:
+  #   - db
+  #   ports:
+  #   - 8082:80
 
   # ftp:
   #   image: atmoz/sftp:alpine
